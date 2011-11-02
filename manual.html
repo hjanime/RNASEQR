@@ -1,0 +1,372 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=utf8">
+	<META http-equiv="Content-Script-Type" content="text/javascript">
+	<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+	<META HTTP-EQUIV="Expires" CONTENT="-1">
+	<TITLE>RNASEQR</TITLE>
+  	<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+	<LINK rel='STYLESHEET' href='' TYPE='text/css' />
+<style type="text/css">
+.example {color:red; text-decoration:underline;}
+.headname {font-family:;font-weight:bold;font-size:2.6em;}
+.content {font-family:;padding-right: 2em; padding-left: 2em;}
+.recent_news {font-family:;padding:10px;}
+.opt {color:#0000FF;font-family:serif;cursor:pointer;}
+.tabs {display:inline; padding-right: 5px; padding-left: 5px;}
+table tr td {margin-bottom: 10px;}
+</style>
+</HEAD>
+<BODY>
+
+<div id="main" style='margin-right:auto; margin-left:auto;margin-top:2em;width:700px;' >
+
+<br /><br />
+<p><h1 id="CONTENT">Manual of RNASEQR v. 0.6</h1></p>
+<p style='margin-top:1.5;margin-bottom:1.5;color:green;'>
+<ul >
+<li ><a href="#Intro">Introduction</a></li>
+<li ><a href="#Prerequisites">System rquirements</a></li>
+<li ><a href="#install">Installation</a></li>
+<li ><a href="#get_start">Before started</a></li>
+<li ><a href="#using">Using RNASEQR</a>
+	<ul>
+	<li ><a href="#cmd">command line</a></li>
+	<li ><a href="#conf">configuration file</a></li>
+	<li ><a href="#input_i">index file</a></li>
+	<li ><a href="#input">input file</a></li>
+	<li ><a href="#nspace">nucleotide sequence format</a></li>
+	<li ><a href="#cspace">color space sequence format</a></li>
+	<li ><a href="#s_end">single-end library</a></li>
+	<li ><a href="#p_end">paired-end library</a></li>
+	</ul>
+</li>
+<li ><a href="#build_index">Build your own index</a>
+        <ul>
+        <li ><a href="#build_index_g">genome</a></li>
+        <li ><a href="#build_index_t">transcriptome</a></li>
+        <li ><a href="#build_index_c">color space format</a></li>
+        </ul>
+</li>
+<li ><a href="#output">Output</a></li>
+</ul></p>
+
+<div id="Intro">
+<h2>Introduction [<a href="#CONTENT">^</a>]</h2>
+<p>RNASEQR program is designed specifically for transcriptomic resequencing experiments. It is ulta-fast and accurate, and therefore facilitate various downstream analyses, such as gene expression, alternative transcripts, and sequence variations. It is also made compatible with many downstream analysis tools. For more detail, please click <a href="http://taipeiisb.no-ip.org/RNASEQR/index.html#about">here</a>.</p>
+</div>
+
+<div id="Prerequisites">
+<h2>System requirements [<a href="#CONTENT">^</a>]</h2>
+<p>Since it is implemented using Python, RNASEQR shall work on most platforms, as long as a Python interpreter is installed.</p>
+<p>RNASEQR program requires the following third-party programs.
+<ul><li>Bowtie v.0.12.7<li>BLAT v.34<li>Python 2.7</ul>
+RNASEQR shall work with all versions of Bowtie, BLAT and Python interpreter. However, we strongly recommend to use the version indicated here. The RNASEQR's source code and the necessary third-party programs are available [<a href="download.html">here</a>]. </p>
+<p>RNASEQR is not restricted to run on 64 bit systems, although we strongly recommend users to run it on 64 bit systems. If users would like to run RNASEQR on 32 bit systems, users should install 32 bit version of above programs.</p>
+</div>
+
+<div id="install">
+<h2>Installation [<a href="#CONTENT">^</a>]</h2>
+<p>Simply download the RNASEQR source code file, un-zip it to your favorite directory.
+<blockquote><code><pre># tar -zxvf RNASEQR.XXX.tgz
+# cd RNASEQR.XXX/</pre></code></blockquote>
+Warning: <a href="#Prerequisites">these third-party programs</a> must be installed to runn RNASEQR program.
+</p>
+</div>
+
+
+<div id="get_start">
+<h2>Before started [<a href="#CONTENT">^</a>]</h2>
+<p>Here is a quick start guide. You will need your "index file", "RNA-seq sequence file" to run RNASEQR. Here are the index files for human, annotation file, and the pre-computed result file. 
+<blockquote>
+<code><pre>
+# mkdir RNASEQR_index
+# cd RNASEQR_index/
+# wget http://taipeiisb.no-ip.org/RNASEQR/bowtie_indexes_for_human.part_1.tgz
+# wget http://taipeiisb.no-ip.org/RNASEQR/bowtie_indexes_for_human.part_2.tgz
+# wget http://taipeiisb.no-ip.org/RNASEQR/blat_indexes_for_human.part_1.tgz
+# tar -zxvf ./*.tgz
+# wget http://taipeiisb.no-ip.org/RNASEQR/annotation.bed.gz
+# gzip -d annotation.bed.gz
+# cd ../</pre></code>
+</blockquote></p>
+<p>Once the index and annotation file are downloaded, please download the version for demonstration purpose of RNASEQR, which also includes precompiled BLAT and Bowtie.
+<blockquote>
+<code><pre>
+# mkdir RNASEQR
+# cd RNASEQR/
+# wget http://taipeiisb.no-ip.org/RNASEQR/RNASEQR_v0.6.demo.tgz
+# tar -zxvf ./RNASEQR_v0.6.demo.tgz
+# cd ../</pre></code>
+</blockquote></p>
+<p>Here is the test data file.
+<blockquote>
+<code><pre>
+# mkdir RNASEQR_test
+# cd RNASEQR_test/
+# wget http://taipeiisb.no-ip.org/RNASEQR/RNASEQR_v0.6.test_data.tgz
+# tar -zxvf ./RNASEQR_v0.6.test_data.tgz
+# python ../RNASEQR/RNASEQRp.py -q ./test.fastq  ./test.cfg</pre></code>
+</blockquote>
+The test data file includes three files, i.e., a FASTQ RNA-seq library file, a RNASEQR configuration file, and a SAM file which is the precomputed result. The SAM file is meant for varifying your test run and should be identifical to the test output.</p>
+</div>
+
+
+
+
+<div id="using">
+<h2>Using RNASEQR [<a href="#CONTENT">^</a>]</h2>
+<p><code>RNASEQRp.py</code> is the Python script to run RNASEQR. The option <code>-h</code> lists all available options and their short descriptions.
+<blockquote>
+<code><pre># python RNASEQRp.py -h
+usage: RNASEQRp.py [-h] [-a PATH] [-m Integer] [-b Integer] [-p Integer]
+                   [-s TYPE] [-l PATH] [-n PATH] [-t TYPE] [-i PATH] [-q PATH]
+                   [-f PATH] [-g PATH] [-r Integer] [--version]
+                   [setting.config]
+
+RNASEQR is developed to analyze the RNA-seq data. User can set the parameters
+of RNASEQR as arguments directly, if the configuration file is not given. If
+the arugments and configuration file both are given, then the values of
+arguments will replace the values of parameters in configuration file.
+
+positional arguments:
+  setting.config  configuration file. If the file is given, the command-line
+                  parameters will replace parameters in the file enforcely.
+
+optional arguments:
+  -h, --help      show this help message and exit
+  -a PATH         aligner_path
+  -m Integer      align_mismatch
+  -b Integer      segment align_mismatch
+  -p Integer      number_of_thread
+  -s TYPE         phred_type: "Sanger","Solexa","Illumina1.3","Illumina1.5+"
+  -l PATH         local_aligner_path
+  -n PATH         genome_index_prefix_for_local_aligner
+  -t TYPE         annotation_type
+  -i PATH         annotation_index_prefix
+  -q PATH         input_fastq
+  -f PATH         annotation_file
+  -g PATH         genome_index_prefix
+  -r Integer      The length of short read
+  -C Integer      If use colorspace, set the value of this option as 1.
+  -G Integer      [Paired-end Only] The insertion length of paired-end reads.
+  --version       show program's version number and exit
+</pre></code>
+</blockquote></p>
+<p><code>RNASEQRp.py</code> can be trigger in the command line mode or using the specified configuration file describing included options. To process multiple sequence files, we suggest using configuration file to run RNASEQR in batch-mode.</p>
+<p>
+<table>
+<tr><td>options</td><td>description</td></tr>
+<tr><td>-a</td><td>Specify the directory path where Bowtie is installed.</td></tr>
+<tr><td>-m</td><td>Specify the number of mismatches allowed in the full-length RNA-seq sequence.</td></tr>
+<tr><td>-b</td><td>Specify the number of mismatches allowed in the segmented sequence.</td></tr>
+<tr><td>-p</td><td>Specify the number of CPU threads used by RNASEQR. Warning: do NOT attempt to specify a number larger than available threads in your system.</td></tr>
+<tr><td>-s</td><td>Specify the Phred format denoting the sequencing qaulity in the input fastq file. Please specify one of the following: "Sanger","Solexa","Illumina1.3", and "Illumina1.5+".</td></tr>
+<tr><td>-l</td><td>Specify the directory path where BLAT is installed.</td></tr>
+<tr><td>-n</td><td>Specify the file path of indexes of genome for BLAT.</td></tr>
+<tr><td>-q</td><td>Specify the file path of RNA-seq sequence file(s).</td></tr>
+<tr><td>-f</td><td>Specify the path of annotation of reference transcriptome.</td></tr>
+		<tr><td>-t</td><td>The format used to recorded annotation of reference transcriptome. Currently we support two popular formats, "BED" and "GTF".</td></tr>
+<tr><td>-i</td><td>Specify the file path of transcriptomic index.</td></tr>
+<tr><td>-g</td><td>Specify the file path of genomic indexes.</td></tr>
+<tr><td>-r</td><td>Specify the sequence length of the RNA-seq library</td></tr>
+	<tr><td>-C</td><td>If use colorspace, set the value of this option as 1.</td></tr>
+<tr><td>-G</td><td>Specify the insert size of the paired-end sequence library.</td></tr>
+</table>
+</p>
+</div>
+
+
+
+<div id="cmd">
+<h2>Command line [<a href="#CONTENT">^</a>]</h2>
+<p> Here is an sample command to run RNASERQ without specifying a configuration file.
+<blockquote><code>
+# python /path/to/RNASEQRp.py -a /path/to/bowtie-0.12.7/bowtie -m 3 -b 1 -p 2 -s Illumina1.5+  -t BED -i /path/to/seq_indexes/Homo_sapiens.GRCh37.59.UCSC.transcriptome -f /path/to/seq_indexes/UCSC_knownGene_hg19.bed -g /path/to/seq_indexes/Homo_sapiens.GRCh37.59.genome -r 75 -q /path/to/example.fastq 
+</code></blockquote>
+</p>
+</div>
+
+
+
+<div id="conf">
+<h2>Configuration file [<a href="#CONTENT">^</a>]</h2>
+<p>The configuration file records all available options. Users can simply change the options defined in the file. The format is <code>VARIABLE_NAME=VARIABLE_VALUE</code>, one variable per line.</p>
+<p>Please note that the parameters in the configuration file will be ignored if defined in both of the command line and configuration file.
+<blockquote><code><pre>
+# python RNASEQRp.py -m 3 -q /path/to/example.fastq RNASEQR.cfg
+</pre></code></blockquote>
+The following is an example of configuration file RNASEQR.cfg.
+<blockquote><code><pre>
+aligner_path=/path/to/bowtie-0.12.7/bowtie
+align_mismatch=0
+seg_align_mismatch=1
+number_of_thread=7
+phred_type=Illumina1.5+
+annotation_index_prefix=/path/to/seq_indexes/Homo_sapiens.GRCh37.59.UCSC.transcriptome
+annotation_file=/path/to/seq_indexes/knownGene_hg19.bed
+genome_index_prefix=/path/to/seq_indexes/Homo_sapiens.GRCh37.59.genome
+short_read_length=40
+local_aligner_path=/path/to/blat_v34/blat
+genome_index_prefix_for_local_aligner=/path/to/seq_indexes/Homo_sapiens.GRCh37.59.genome.2bit
+annotation_type=BED
+</pre></code></blockquote>
+</p>
+<p>The following is the table of VARIABLE_NAMEs corresponding to command line arguments.</p>
+<p><table border=1>
+<tr><td>argument</td><td>VARIABLE_NAME</td></tr>
+<tr><td>-a</td><td>aligner_path</td></tr>
+<tr><td>-m</td><td>align_mismatch</td></tr>
+<tr><td>-b</td><td>seg_align_mismatch</td></tr>
+<tr><td>-p</td><td>number_of_thread</td></tr>
+<tr><td>-s</td><td>phred_type</td></tr>
+<tr><td>-i</td><td>annotation_index_prefix</td></tr>
+<tr><td>-f</td><td>annotation_file</td></tr>
+<tr><td>-g</td><td>genome_index_prefix</td></tr>
+<tr><td>-r</td><td>short_read_length</td></tr>
+<tr><td>-l</td><td>local_aligner_path</td></tr>
+<tr><td>-n</td><td>genome_index_prefix_for_local_aligner</td></tr>
+<tr><td>-t</td><td>annotation_type</td></tr>
+<tr><td>-C</td><td>colorspace</td></tr>
+<tr><td>-G</td><td>paired_end_gap</td></tr>
+</table>
+</p>
+</div>
+
+
+<div id="input_i">
+<h2>Index file [<a href="#CONTENT">^</a>]</h2>
+<p>RNASEQR requires two pre-built genomic indexes and one prebuilt transcriptomic index file: Bowtie reads both genomic and transcriptomic indexes while BLAT reads a light-weighted genomic index. RNASEQR program also requires an transcriptomic annotation corresponding to the transcriptomic index. The transcriptomic annotation should be either written
+in the <a href="http://mblab.wustl.edu/GTF22.html">GTF</a> or <a href="http://genome.ucsc.edu/FAQ/FAQformat.html#format1">BED</a> file format.
+</p>
+<p>RNASEQR program takes advantage of the transcriptomic annotation in the UCSC Genome Browser by default. However, gene annotations from the Ensembl Genme Browser and Refseq Genes at NCBI also deliver good results. These annotations can be found <a href="http://genome.ucsc.edu/cgi-bin/hgTables?">here</a>. The Human and Mouse transcriptomic annotations can be downloaded directly from <a href="download.html">RNASEQR download page</a>.</p>
+<p>Please note that the transcriptomic index should be built from the same annotation.</p>
+</div>
+
+
+<div id="input">
+<h2>Input file [<a href="#CONTENT">^</a>]</h2>
+<p>The current version of RNASEQR reads <a href="http://en.wikipedia.org/wiki/FASTQ_format">FASTQ sequence file</a> or color-space sequence file.</p>
+</div>
+
+
+<div id="#nspace">
+<h2>Nucleotide sequence file [<a href="#CONTENT">^</a>]</h2>
+<p>RNASEQR assumes the sequence files are FASTQ format by default unless otherwise specified.</p>
+</div>
+
+
+<div id="cspace">
+<h2>Color space sequence file [<a href="#CONTENT">^</a>]</h2>
+<p>RNASEQR also reads color space file format (csfasta) which is seen on the Applied Biosystems' SOLiD platform. In the csfasta file, the nucleotide sequences are encoded as 0,1,2, and 3, which represent four different colors.</p>
+<p>The output sequencing result on the SOLiD system includes two files, csfasta file and qual file, which record sequence and corresponding quality, respectively. To run the RNASEQR program on the color space sequence files, the genomic and transcriptomic indexes have to be built in the color space format. Alternatively, users can convert the csfasta file to fastq using some third-party programs.</p>
+<p>To run RNASEQR on colorspace FASTQ file, please use the option <code>-C</code>.</p>
+</div>
+
+
+<div id="s_end">
+<h2>Single-end RNA-seq library [<a href="#CONTENT">^</a>]</h2>
+<p>RNASEQR by default reads the sequence files as single-ended.</p>
+</div>
+
+
+<div id="p_end">
+<h2>Paired-end RNA-seq library [<a href="#CONTENT">^</a>]</h2>
+<p>To analyze paired-end data, each mate sequence in a pair has to be recorded in two seperate FASTQ files: one records only the first mate and the other records the second mate. These two FASTQ files should be seperated by comma after the option <code>-q</code>. For example,
+<blockquote><code><pre># python RNASEQRp.py -q first_end.fastq,second_end.fastq  test.cfg</pre></code></blockquote>
+</p>
+<p>A paired-end alignment is reported as a pair of mate alignments, both on a separate line. The alignment for each mate sequence is formatted the same as an unpaired (singleton) alignment. The alignment for the mate that occurs closest to the beginning of the reference sequence (the "upstream" mate) is always printed before the alignment for the downstream mate.</p>
+</div>
+
+
+<div id="build_index">
+<h2>Build your own index [<a href="#CONTENT">^</a>]</h2>
+<p>Users can build their own genomic and transcriptomic indexes , especially those not provided with RNASEQR program. To build the index, users need to first download the sequence files in the FASTA format. Here the genome file is named G.fasta and the transcriptome file is named T.fasta. </p>
+<p>The followings are the sample command to build customized indexes for Blat and Bowtie.
+<blockquote><code><pre>
+# /path/to/blat_v34/faToTwoBit G.fasta G.2bit
+# /path/to/bowtie-0.12.7/bowtie-build G.fasta G
+# /path/to/bowtie-0.12.7/bowtie-build -o 0 T.fasta T
+</pre></code></blockquote></p>
+</div>
+
+<div id="build_index_g">
+<h2>genome [<a href="#CONTENT">^</a>]</h2>
+<p>To build a customized genomic index, users have to first have the genome reference file. Here is an example building index of human genome.</p>
+<p>Go to <a href="http://www.ensembl.org/info/data/ftp/index.html">Ensembl FTP</a> to download the FASTA files of human DNA sequences. Currently, the latest version is GRCh 37.63. Once all the files are downloaded, concatenate these files and start to build the index.
+<blockquote><code><pre>
+# gzip -d Homo_sapiens.GRCh37.63.dna.chromosome.*.fa.gz
+# cat Homo_sapiens.GRCh37.63.dna.chromosome.*.fa > Homo_sapiens.GRCh37.63.genome.fasta
+# /path/to/blat_v34/faToTwoBit Homo_sapiens.GRCh37.63.genome.fasta Homo_sapiens.GRCh37.63.genome.2bit
+# /path/to/bowtie-0.12.7/bowtie-build Homo_sapiens.GRCh37.63.genome.fasta Homo_sapiens.GRCh37.63.genome
+</pre></code></blockquote></p>
+<p>Users should get the following indexes -- Homo_sapiens.GRCh37.63.genome.2bit, Homo_sapiens.GRCh37.63.genome.1.ebwt, Homo_sapiens.GRCh37.63.genome.2.ebwt, Homo_sapiens.GRCh37.63.genome.3.ebwt, Homo_sapiens.GRCh37.63.genome.4.ebwt, Homo_sapiens.GRCh37.63.genome.rev.1.ebwt, and Homo_sapiens.GRCh37.63.genome.rev.2.ebwt</p>
+</div>
+
+<div id="build_index_t">
+<h2>transcriptome [<a href="#CONTENT">^</a>]</h2>
+<p>Here is an example to build human transcriptome index. The transcriptomic reference sequences are downloaded from the Ensembl Genome Browser.</p>
+<p>Go to <a href="http://www.ensembl.org/info/data/ftp/index.html">Ensembl FTP</a> to download the FASTA file for human cDNA sequences. Currently, the latest version is GRCh 37.63.
+<blockquote><code><pre>
+# gzip -d Homo_sapiens.GRCh37.63.cdna.all.fa.gz
+# /path/to/bowtie-0.12.7/bowtie-build -o 0 Homo_sapiens.GRCh37.63.cdna.all.fa Homo_sapiens.GRCh37.63.transcriptome
+</pre></code></blockquote></p>
+<p>Users should have the following index files -- Homo_sapiens.GRCh37.63.transcriptome.1.ebwt, Homo_sapiens.GRCh37.63.transcriptome.2.ebwt, Homo_sapiens.GRCh37.63.transcriptome.3.ebwt, Homo_sapiens.GRCh37.63.transcriptome.4.ebwt, Homo_sapiens.GRCh37.63.transcriptome.rev.1.ebwt, and Homo_sapiens.GRCh37.63.transcriptome.rev.2.ebwt</p>
+<p>Please also download corresponding gene annotation from <a href="http://www.ensembl.org/info/data/ftp/index.html">Ensembl FTP</a>. 
+<blockquote><code><pre>
+# gzip -d Homo_sapiens.GRCh37.63.gtf.gz
+</pre></code></blockquote></p>
+</div>
+
+
+<div id="build_index_c">
+<h2>color space format[<a href="#CONTENT">^</a>]</h2>
+<p>The index in the nucleotide sequence format can not be used to analyze color space RNA-seq libraries. To build the index files in color space format, users shall start from FASTA sequence files. Here is a sample commands to build color space indexs for human genome and transcriptome</p>
+<p>Go to <a href="http://www.ensembl.org/info/data/ftp/index.html">Ensembl FTP</a>to download the FASTA files of both genome and transcriptome sequences. Currently, the latest version is GRCh 37.63. Once the files are downloaded, concatenate the files and start to build the indexes.
+<blockquote><code><pre>
+# gzip -d Homo_sapiens.GRCh37.63.dna.chromosome.*.fa.gz
+# cat Homo_sapiens.GRCh37.63.dna.chromosome.*.fa > Homo_sapiens.GRCh37.63.genome.fasta
+# /path/to/bowtie-0.12.7/bowtie-build -C Homo_sapiens.GRCh37.63.genome.fasta Homo_sapiens.GRCh37.63.genome
+# gzip -d Homo_sapiens.GRCh37.63.cdna.all.fa.gz
+# /path/to/bowtie-0.12.7/bowtie-build -C -o 0 Homo_sapiens.GRCh37.63.cdna.all.fa Homo_sapiens.GRCh37.63.transcriptome
+</pre></code></blockquote></p>
+<p>Please note that RNASEQR do not invoke BLAT to map unmapped color space sequences. As a result, users do not require to build the genomic index for BLAT.</p>
+</div>
+
+
+<div id="output">
+<h2>Output [<a href="#CONTENT">^</a>]</h2>
+<p>The current version of RNASEQR program reports only uniquely mapped sequences. The mapping and alignment result is reported in the SAM format, delimited by tab. </p>
+<p>In the mapping output file, each line records a sequence and the corresponding mapping/alignment result. Each line has at least 12 fields separated by tabs. These fields are listed below. For more detail about the SAM file format, please go to <a href="http://samtools.sourceforge.net/SAM1.pdf">SAM format specification</a> page. </p><ol style="list-style-type: decimal;">
+<ol>
+<li><p>Name of read that aligned</p></li>
+<li><p>Sum of all applicable flags. Flags relevant to Bowtie are:</p>
+<table><tbody>
+<tr><td><pre><code>1</code></pre></td><td><p>The read is one of a pair</p></td></tr>
+<tr><td><pre><code>2</code></pre></td><td><p>The alignment is one end of a proper paired-end alignment</p></td></tr>
+<tr><td><pre><code>4</code></pre></td><td><p>The read has no reported alignments</p></td></tr>
+<tr><td><pre><code>8</code></pre></td><td><p>The read is one of a pair and has no reported alignments</p></td></tr>
+<tr><td><pre><code>16</code></pre></td><td><p>The alignment is to the reverse reference strand</p></td></tr>
+</tbody></table>
+</li>
+<li><p>Name of reference sequence where alignment occurs, or ordinal ID if no name was provided</p></li>
+<li><p>1-based offset into the forward reference strand where leftmost character of the alignment occurs</p></li>
+<li><p>Mapping quality</p></li>
+<li><p>CIGAR string representation of alignment</p></li>
+<li><p>Name of reference sequence where mate's alignment occurs. Set to <code>=</code> if the mate's reference sequence is the same as this alignment's, or <code>*</code> if there is no mate.</p></li>
+<li><p>1-based offset into the forward reference strand where leftmost character of the mate's alignment occurs. Offset is 0 if there is no mate.</p></li>
+<li><p>Inferred insert size. Size is negative if the mate's alignment occurs upstream of this alignment. Size is 0 if there is no mate.</p></li>
+<li><p>Read sequence (reverse-complemented if aligned to the reverse strand)</p></li>
+<li><p>ASCII-encoded read qualities (reverse-complemented if the read aligned to the reverse strand). The encoded quality values are on the <a href="http://en.wikipedia.org/wiki/FASTQ_format#Variations">Phred quality</a> scale and the encoding is ASCII-offset by 33, similarly to a <a href="http://en.wikipedia.org/wiki/FASTQ_format">FASTQ</a> file.</p></li>
+<li><p>Optional fields.</p></li>
+</ol>
+</p>
+</div>
+
+
+
+</div><!--MAIN IDV-->
+</BODY></HTML>

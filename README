@@ -1,0 +1,41 @@
+=========================================================================
+*
+* RNASEQR - A streamlined and accurate RNA-seq sequence analysis program 
+*
+=========================================================================
+
+We developed RNASEQR to align RNA-seq reads efficiently and to comprehensively discover both known and novel splice junctions. RNASEQR maps more reads while tolerates fewer mismatches, allows mapping reads on hyper-mutated genomic regions, and reduces significantly the false-positive SNV detection in the downstream analysis. Alignment result of RNASEQR can be reliably used to detect both annotated and novel exons and genes and to identify alternative splicing events and comprehensive gene structure present in the biological samples of interest. 
+
+
+Cite:
+RNASEQR - A streamlined and accurate RNA-seq sequence analysis program
+Leslie Y Chen#, Kuo-Chen Wei#, Abner C.-Y. Huang#, Kai Wang, Chiung-Yin Huang, Danielle Yi, Chuan Yi Tang, David J. Galas, Leroy E. Hood
+(Submitted to Nucleic Acids Research)
+#Co-first authors.
+
+
+===  DOCUMENTATION ===
+See manual.html
+
+===  LICENSE ===
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+
+===  CREDITS ===
+Most code are contributed by Abner Huang. A few code are adopted from works of Heng Li.
+And a few code are adopted from bpbio (http://code.google.com/p/bpbio/)
+
+=== AUTHORS ===
+RNASEQR - A streamlined and accurate RNA-seq sequence analysis program
+Leslie Y Chen1,#, Kuo-Chen Wei2,#, Abner C.-Y. Huang2,3,#, Kai Wang1, Chiung-Yin Huang2, Danielle Yi1, Chuan Yi Tang3,4, David J. Galas1,5, Leroy E. Hood1,5
+
+Affiliations
+1 Institute for Systems Biology, 401 Terry Avenue North, Seattle, WA 98109, U.S.A.
+2 Department of Neurosurgery, Chang Gung University College of Medicine and, Memorial Hospital, 5 Fu-Shing Street, Kwei-Shan, Taoyuan County, Taiwan 333, R.O.C.
+3 Department of Computer Science, National Tsing-Hua University, 101, Section 2, Kuang-Fu Road, Hsinchu, Taiwan 300, R.O.C.
+4 Department of Computer Science and Information Engineering, Providence University, 200 Chung Chi Road, Taichung, Taiwan 433, R.O.C.
+5Guest Professor, Luxembourg Centre for Systems Biomedicine, University of Luxembourg, Luxembourg
+
+LYC, KCW, KW, DJG, and LEH designed the experiment. ACYH wrote the related code. LYC, CYH and DY performed the experiment. All authors involved in discussion of the project. The project is led by LYC. For any enquiry, please contact LYC (chenyyl AT gmail DOT com).
+
