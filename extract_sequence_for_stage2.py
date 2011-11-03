@@ -182,6 +182,8 @@ if __name__ == '__main__':
 	parser = OptionParser(usage=usage)
 	parser.add_option("-p", "--path", dest="local_align_path", help="local_align_path", metavar="PATH",default="/local/blat_v34/blat")
 	parser.add_option("-i", "--index", dest="local_align_index", help="local_align_index", metavar="PATH",default="/local/seq_indexes/blat_indexes/Homo_sapiens.GRCh37.59.genome.fa.2bit")
+	parser.add_option("-n", "--num_seq", dest="num_of_seg", help="The number of valid segments. It will be used to filter anchors", metavar="INT",default=2)
+	parser.add_option("-d", "--debug", dest="debug", help="", metavar="INT",default=-1)
 	(options, args) = parser.parse_args()
 
 	if len(args) < 4:
@@ -192,6 +194,8 @@ if __name__ == '__main__':
 		phase3_input_file = args[1]
 		phase4_input_file = args[2]
 		output_file = args[3]
+		num_of_seg = int(options.num_of_seg)
+		debug = int(options.debug)
 	else:
 		parser.error("Too much arguments.")
 		exit(2)
@@ -321,16 +325,19 @@ if __name__ == '__main__':
 	count_1,count_2,count_3=(0,0,0)
 	f_count_2=0
 	reads=dict()
+	exact_threshold=num_of_seg
+	over_threshold=num_of_seg+1
+	under_threshold=num_of_seg-1
 	for i in curr_result.iterkeys():
-		if len(curr_result[i])>3:
+		if len(curr_result[i])>over_threshold:
 			#print "ERROR_A",i, curr_result[i]
 			f_count_2+=1
-		elif len(curr_result[i])==3:
+		elif len(curr_result[i])==over_threshold:
 			#print "ERROR_C",i, curr_result[i]
 			count_3+=1
-		elif len(curr_result[i])==2:
+		elif len(curr_result[i])==exact_threshold:
 			reads[i]=curr_result[i][0][2]
-		elif len(curr_result[i])==1:
+		elif len(curr_result[i])==under_threshold:
 			count_1+=1
 		else:
 			#print "ERROR_D",i, curr_result[i]
@@ -360,10 +367,11 @@ if __name__ == '__main__':
 		print >>stderr, "Child was terminated by signal", -retcode
 	print "Finish coverting pslx format to SAM foramt."
 	
-	instrcution="rm  temp_*"+rand_sig+"* "
-	retcode = subprocess.call(instrcution, shell=True)
-	if retcode < 0:
-		print >>stderr, "Child was terminated by signal", -retcode
-	print "Finsih cleaning temporary files."
+	if debug==-1:
+		instrcution="rm  temp_*"+rand_sig+"* "
+		retcode = subprocess.call(instrcution, shell=True)
+		if retcode < 0:
+			print >>stderr, "Child was terminated by signal", -retcode
+		print "Finsih cleaning temporary files."
 	
 	

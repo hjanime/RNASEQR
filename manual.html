@@ -124,36 +124,44 @@ The test data file includes three files, i.e., a FASTQ RNA-seq library file, a R
 <code><pre># python RNASEQRp.py -h
 usage: RNASEQRp.py [-h] [-a PATH] [-m Integer] [-b Integer] [-p Integer]
                    [-s TYPE] [-l PATH] [-n PATH] [-t TYPE] [-i PATH] [-q PATH]
-                   [-f PATH] [-g PATH] [-r Integer] [--version]
+                   [-f PATH] [-g PATH] [-r Integer] [-e Integer] [-x Integer]
+                   [-C Integer] [-G String] [-o Integer] [--version]
+                   [--debug Integer]
                    [setting.config]
 
 RNASEQR is developed to analyze the RNA-seq data. User can set the parameters
 of RNASEQR as arguments directly, if the configuration file is not given. If
-the arugments and configuration file both are given, then the values of
+the augments and configuration file both are given, then the values of
 arguments will replace the values of parameters in configuration file.
 
 positional arguments:
-  setting.config  configuration file. If the file is given, the command-line
-                  parameters will replace parameters in the file enforcely.
+  setting.config   configuration file. If the file is given, the command-line
+                   parameters will replace parameters in the file enforcely.
 
 optional arguments:
-  -h, --help      show this help message and exit
-  -a PATH         aligner_path
-  -m Integer      align_mismatch
-  -b Integer      segment align_mismatch
-  -p Integer      number_of_thread
-  -s TYPE         phred_type: "Sanger","Solexa","Illumina1.3","Illumina1.5+"
-  -l PATH         local_aligner_path
-  -n PATH         genome_index_prefix_for_local_aligner
-  -t TYPE         annotation_type
-  -i PATH         annotation_index_prefix
-  -q PATH         input_fastq
-  -f PATH         annotation_file
-  -g PATH         genome_index_prefix
-  -r Integer      The length of short read
-  -C Integer      If use colorspace, set the value of this option as 1.
-  -G Integer      [Paired-end Only] The insertion length of paired-end reads.
-  --version       show program's version number and exit
+  -h, --help       show this help message and exit
+  -a PATH          aligner_path
+  -m Integer       align_mismatch
+  -b Integer       segment align_mismatch
+  -p Integer       number_of_thread
+  -s TYPE          phred_type: "Sanger","Solexa","Illumina1.3","Illumina1.5+"
+  -l PATH          local_aligner_path
+  -n PATH          genome_index_prefix_for_local_aligner
+  -t TYPE          annotation_type
+  -i PATH          annotation_index_prefix
+  -q PATH          Input FASTQ file. If the input is paired-end data, use
+                   comma to separate them in order.
+  -f PATH          annotation_file
+  -g PATH          genome_index_prefix
+  -r Integer       The length of short read
+  -e Integer       The number of hit anchors to be valid
+  -x Integer       The length of anchors
+  -C Integer       If use colorspace, set the value of this option as 1.
+  -G String        [Paired-end Only] The insertion length of paired-end reads.
+                   The format is INT-INT, e.g., 200-400.
+  -o Integer       Maximum number of overlaping exons in annotation
+  --version        show program's version number and exit
+  --debug Integer  Set value 1 to open the debug mode
 </pre></code>
 </blockquote></p>
 <p><code>RNASEQRp.py</code> can be trigger in the command line mode or using the specified configuration file describing included options. To process multiple sequence files, we suggest using configuration file to run RNASEQR in batch-mode.</p>
@@ -175,6 +183,7 @@ optional arguments:
 <tr><td>-r</td><td>Specify the sequence length of the RNA-seq library</td></tr>
 	<tr><td>-C</td><td>If use colorspace, set the value of this option as 1.</td></tr>
 <tr><td>-G</td><td>Specify the insert size of the paired-end sequence library.</td></tr>
+<tr><td>-o</td><td>Maximum number of overlaping exons in annotation</td></tr>
 </table>
 </p>
 </div>
